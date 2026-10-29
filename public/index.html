@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Donează ! Centrul Creștin Sion Blaj</title>
+  <meta name="description" content="Susține lucrarea Centrului Creștin Sion Blaj. Donează rapid și sigur cu Apple Pay, Google Pay sau cardul.">
+  <meta name="theme-color" content="#DD000D">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sion">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css">
+  <script src="https://js.stripe.com/endive/stripe.js" defer></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div class="demo-banner" id="demo-banner" hidden>Mod demo: nu se încasează bani</div>
+
+  <header class="topbar">
+    <a href="/" class="brand" aria-label="Centrul Creștin Sion Blaj">
+      <img src="/assets/logo-lockup.svg" alt="Centrul Creștin Sion Blaj" width="110" height="44">
+    </a>
+    <span class="secure-pill">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z"/></svg>
+      Plată securizată
+    </span>
+  </header>
+
+  <!-- Pasul 1: alegerea donației -->
+  <main id="view-donate" class="view">
+    <section class="hero">
+      <p class="kicker">Donații</p>
+      <h1>Dăruiește <span class="dot">!</span></h1>
+      <p class="lede">Susține lucrarea Centrului Creștin Sion din Blaj. Durează mai puțin de un minut.</p>
+    </section>
+
+    <form id="donate-form" class="card" novalidate>
+      <div class="field">
+        <div class="label-row">
+          <span class="label" id="amount-label">Alege suma</span>
+          <div class="currency" role="radiogroup" aria-label="Moneda" id="currency-group"></div>
+        </div>
+        <div class="presets" role="radiogroup" aria-labelledby="amount-label" id="presets"></div>
+        <label class="custom-amount">
+          <span class="visually-hidden">Altă sumă</span>
+          <input id="custom-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="Altă sumă">
+          <span class="suffix" id="custom-suffix">RON</span>
+        </label>
+        <p class="hint" id="amount-hint" aria-live="polite"></p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="purpose">Pentru ce dăruiești?</label>
+        <input id="purpose" class="input" type="text" maxlength="100" autocomplete="off" placeholder="Susținerea bisericii">
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="cover-fees">
+        <span class="box" aria-hidden="true"></span>
+        <span>
+          Acopăr și taxele de procesare <strong id="fee-amount"></strong>
+          <small>Astfel, biserica primește suma întreagă.</small>
+        </span>
+      </label>
+
+      <div class="total">
+        <span>Donația ta</span>
+        <strong><span id="total-amount">100 RON</span><em id="total-period" hidden>/lună</em></strong>
+      </div>
+
+      <button type="submit" class="cta" id="continue-btn">
+        Continuă
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.2 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l4.3-4.3H4a1 1 0 1 1 0-2h13.5l-4.3-4.3a1 1 0 0 1 0-1.4Z"/></svg>
+      </button>
+      <p class="error" id="donate-error" role="alert" hidden></p>
+    </form>
+
+    <ul class="methods" aria-label="Metode de plată acceptate">
+      <li>Apple Pay</li><li>Google Pay</li><li>Card</li>
+    </ul>
+
+    <figure class="verse">
+      <blockquote>„Fiecare să dea după cum a hotărât în inima lui: nu cu părere de rău sau de silă, căci pe cel ce dă cu bucurie îl iubește Dumnezeu.”</blockquote>
+      <figcaption>2 Corinteni 9:7</figcaption>
+    </figure>
+  </main>
+
+  <!-- Pasul 2: plata -->
+  <main id="view-pay" class="view" hidden>
+    <div class="pay-head">
+      <button type="button" class="back" id="back-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.7 5.3a1 1 0 0 1 0 1.4L10.4 12l5.3 5.3a1 1 0 1 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0Z"/></svg>
+        Înapoi
+      </button>
+      <h2>Finalizează donația</h2>
+    </div>
+
+    <section class="summary">
+      <div>
+        <span class="summary-purpose" id="sum-purpose">Susținerea bisericii</span>
+        <span class="summary-freq" id="sum-freq">O singură dată</span>
+      </div>
+      <strong id="sum-amount">100 RON</strong>
+    </section>
+
+    <form id="pay-form" class="card pay-card" novalidate>
+      <div class="field">
+        <span class="label">Plătește rapid</span>
+        <div id="express-checkout" class="express"></div>
+      </div>
+
+      <div class="divider"><span>sau cu cardul</span></div>
+
+      <div class="field">
+        <label class="label" for="email">Email pentru chitanță</label>
+        <input id="email" class="input" type="email" autocomplete="email" inputmode="email" placeholder="nume@exemplu.ro" required>
+      </div>
+
+      <div class="field">
+        <div id="payment-element"></div>
+      </div>
+
+      <p class="error" id="pay-error" role="alert" hidden></p>
+
+      <button type="submit" class="cta" id="pay-btn" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z"/></svg>
+        <span id="pay-label">Donează</span>
+      </button>
+      <p class="fineprint" id="monthly-note" hidden>Donația lunară se reînnoiește automat. O poți anula oricând.</p>
+    </form>
+
+    <p class="secure-note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z"/></svg>
+      Plăți procesate securizat de Stripe. Datele cardului nu ajung niciodată la noi.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <img src="/assets/logo-mark.svg" alt="" width="28" height="24">
+    <span>Centrul Creștin Sion Blaj</span>
+    <a id="portal-link" href="#" hidden>Gestionează donația lunară</a>
+  </footer>
+</body>
+</html>

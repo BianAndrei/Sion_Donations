@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donații Sion</title>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <style>
+    :root {
+      --red: #DD000D;
+      --ink: #0B0B0C;
+      --ink-2: #3A3A3F;
+      --muted: #8A8A90;
+      --soft: #F4F3F1;
+      --font: "Helvetica Now Display", "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; }
+    body { font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+    /* Scena are mereu 1920×1080 și se scalează pe orice ecran. */
+    .stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #fff;
+      transform-origin: 0 0;
+    }
+
+    .corner { position: absolute; display: block; }
+    .corner.tl { left: 0; top: 0; }
+    .corner.br { right: 0; bottom: 0; }
+    .logo { position: absolute; left: 96px; top: 64px; height: 122px; }
+
+    .watermark {
+      position: absolute;
+      left: 1060px;
+      top: 214px;
+      width: 820px;
+      fill: var(--soft);
+    }
+
+    /* ── Text și cod QR ── */
+    .copy { position: absolute; left: 120px; top: 330px; width: 1020px; }
+    .kicker {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+    h1 {
+      margin: 8px 0 0;
+      font-size: 168px;
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: -.045em;
+    }
+    h1 span { color: var(--red); }
+    .lede { margin: 22px 0 0; font-size: 32px; font-weight: 500; color: var(--ink-2); letter-spacing: -.01em; }
+
+    .scan { display: flex; gap: 52px; margin-top: 42px; align-items: center; }
+    .qr {
+      position: relative;
+      flex: none;
+      width: 300px;
+      height: 300px;
+      padding: 26px;
+      background: #fff;
+    }
+    .qr img { display: block; width: 100%; height: 100%; }
+    /* Colțuri de vizor în jurul codului */
+    .qr i { position: absolute; width: 54px; height: 54px; border: 0 solid var(--red); }
+    .qr i:nth-child(1) { left: 0; top: 0; border-width: 7px 0 0 7px; border-top-left-radius: 14px; }
+    .qr i:nth-child(2) { right: 0; top: 0; border-width: 7px 7px 0 0; border-top-right-radius: 14px; }
+    .qr i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 7px 7px; border-bottom-left-radius: 14px; }
+    .qr i:nth-child(4) { right: 0; bottom: 0; border-width: 0 7px 7px 0; border-bottom-right-radius: 14px; }
+
+    .steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 22px; }
+    .steps li { display: flex; align-items: center; gap: 22px; transition: opacity .35s; }
+    .steps .n {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 3px solid #E3E2DF;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--muted);
+      transition: background .35s, border-color .35s, color .35s;
+    }
+    .steps b { display: block; font-size: 32px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; transition: color .35s; }
+    .steps small { display: block; margin-top: 3px; font-size: 20px; font-weight: 500; color: var(--muted); }
+    .steps li { color: #B9B8B5; }
+    .steps li.on { color: var(--ink); }
+    .steps li.on .n { background: var(--red); border-color: var(--red); color: #fff; }
+    .steps li.done .n { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .steps li.done { color: var(--ink); }
+    .url { margin: 26px 0 0; font-size: 20px; font-weight: 600; color: var(--muted); }
+    .url strong { color: var(--ink); font-weight: 700; }
+
+    /* ── Telefon ── */
+    .phone {
+      position: absolute;
+      left: 1220px;
+      top: 138px;
+      width: 384px;
+      height: 804px;
+      padding: 12px;
+      border-radius: 64px;
+      background: #111113;
+      box-shadow:
+        inset 0 0 0 2px #2B2B2F,
+        0 2px 4px rgba(0,0,0,.12),
+        0 40px 80px -24px rgba(20,0,2,.45),
+        0 80px 140px -60px rgba(221,0,13,.35);
+    }
+    .phone .key { position: absolute; width: 4px; border-radius: 2px; background: #1C1C1F; }
+    .phone .k1 { left: -4px; top: 150px; height: 34px; }
+    .phone .k2 { left: -4px; top: 210px; height: 64px; }
+    .phone .k3 { left: -4px; top: 286px; height: 64px; }
+    .phone .k4 { right: -4px; top: 240px; height: 100px; }
+
+    .viewport {
+      position: relative;
+      width: 360px;
+      height: 780px;
+      overflow: hidden;
+      border-radius: 52px;
+      background: #FAFAF9;
+    }
+    /* Ecranul e desenat în pixeli de aplicație (393×852) și scalat la 360×780. */
+    .screen { position: absolute; left: 0; top: 0; width: 393px; height: 852px; transform: scale(.91603); transform-origin: 0 0; }
+    .scene {
+      position: absolute;
+      left: 0;
+      top: 47px;
+      width: 393px;
+      height: 805px;
+      overflow: hidden;
+      background: #FAFAF9;
+      will-change: transform;
+    }
+    .scene img { display: block; width: 393px; height: auto; will-change: transform; }
+    .scene.pushed { box-shadow: -18px 0 40px rgba(0,0,0,.12); }
+
+    .status {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 393px;
+      height: 47px;
+      padding: 0 30px 0 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FAFAF9;
+      font-size: 16px;
+      font-weight: 700;
+      z-index: 5;
+    }
+    .status svg { height: 12px; fill: var(--ink); }
+    .status .icons { display: flex; gap: 6px; align-items: center; }
+    .island {
+      position: absolute;
+      left: 50%;
+      top: 11px;
+      width: 120px;
+      height: 34px;
+      margin-left: -60px;
+      border-radius: 20px;
+      background: #000;
+      z-index: 6;
+    }
+    .home {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 136px;
+      height: 5px;
+      margin-left: -68px;
+      border-radius: 3px;
+      background: var(--ink);
+      z-index: 6;
+    }
+    .tap {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 70px;
+      height: 70px;
+      margin: -35px 0 0 -35px;
+      border-radius: 50%;
+      background: rgba(11,11,12,.22);
+      border: 3px solid rgba(255,255,255,.85);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+      opacity: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <svg class="corner tl" width="720" height="250" viewBox="0 0 720 250" aria-hidden="true">
+      <polygon points="0,0 720,0 575.7,250 0,250" fill="#DD000D"/>
+    </svg>
+    <img class="logo" src="assets/logo-lockup-white.svg" alt="Centrul Creștin Sion Blaj">
+
+    <svg class="corner br" width="430" height="200" viewBox="0 0 430 200" aria-hidden="true">
+      <polygon points="115.5,0 430,0 430,200 0,200" fill="#DD000D"/>
+      <g fill="#fff">
+        <rect x="263" y="64" width="14" height="74" rx="1"/>
+        <rect x="244" y="83" width="52" height="14" rx="1"/>
+      </g>
+    </svg>
+
+    <svg class="watermark" viewBox="0 0 875 733" aria-hidden="true">
+      <path d="M446 3 873 730H785L450 182 360 328 305 237ZM247 325 300 418 170 637H550L392 378 438 298 700 730H2Z"/>
+    </svg>
+
+    <section class="copy">
+      <p class="kicker">Susține lucrarea Sion</p>
+      <h1>Dăruiește <span>!</span></h1>
+      <p class="lede">Donează direct de pe telefon, în mai puțin de un minut.</p>
+
+      <div class="scan">
+        <div class="qr"><i></i><i></i><i></i><i></i><img src="assets/qr.svg" alt="Cod QR pentru donații"></div>
+        <div>
+          <ol class="steps" id="steps">
+            <li><span class="n">1</span><span><b>Scanează codul</b><small>Deschide camera telefonului</small></span></li>
+            <li><span class="n">2</span><span><b>Alege suma</b><small>Și scrie pentru ce dăruiești</small></span></li>
+            <li><span class="n">3</span><span><b>Donează</b><small>Apple Pay, Google Pay sau card</small></span></li>
+          </ol>
+          <p class="url" id="url"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="phone" aria-hidden="true">
+      <i class="key k1"></i><i class="key k2"></i><i class="key k3"></i><i class="key k4"></i>
+      <div class="viewport">
+        <div class="screen">
+          <div class="scene" id="s-form"><img src="assets/screen-form.png" alt=""></div>
+          <div class="scene pushed" id="s-pay"><img src="assets/screen-pay.png" alt=""></div>
+          <div class="scene pushed" id="s-thanks"><img src="assets/screen-thanks.png" alt=""></div>
+          <div class="tap" id="tap"></div>
+          <div class="status">
+            <span>9:41</span>
+            <span class="icons">
+              <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+              <svg viewBox="0 0 16 12"><path d="M8 2.2c2.4 0 4.6.9 6.3 2.5l1.2-1.3A10.8 10.8 0 0 0 8 .4C5.1.4 2.5 1.5.5 3.4l1.2 1.3A9 9 0 0 1 8 2.2Zm0 3.6c1.4 0 2.7.5 3.7 1.4l1.2-1.3A7.2 7.2 0 0 0 8 4c-1.9 0-3.6.7-4.9 1.9l1.2 1.3c1-.9 2.3-1.4 3.7-1.4ZM8 9.4l2.1-2.2a3.2 3.2 0 0 0-4.2 0Z"/></svg>
+              <svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#0B0B0C" stroke-opacity=".4"/><rect x="2" y="2" width="19" height="8" rx="2"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+          <div class="island"></div>
+          <div class="home"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/scenes.js"></script>
+  <script>
+    const P = window.POSTER;
+    const stage = document.getElementById('stage');
+    const $ = (id) => document.getElementById(id);
+
+    document.getElementById('url').innerHTML = `sau intră pe <strong>${P.display}</strong>`;
+
+    function fit() {
+      const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+      const x = (innerWidth - 1920 * s) / 2;
+      const y = (innerHeight - 1080 * s) / 2;
+      stage.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+    }
+    addEventListener('resize', fit);
+    fit();
+
+    // ── Animația telefonului ─────────────────────────────────────────────────
+    const W = 393;
+    const VIEW_H = 805;
+    const LOOP = 18;
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+    const seg = (t, a, b) => ease(clamp((t - a) / (b - a)));
+    const bottomOf = (b) => b.y + b.h + 28 - VIEW_H;
+    const maxScroll = (name) => Math.max(0, P.scenes[name].height - VIEW_H);
+
+    const formEnd = Math.max(0, Math.min(maxScroll('form'), bottomOf(P.scenes.form.taps.cta)));
+    const payEnd = Math.max(0, Math.min(maxScroll('pay'), bottomOf(P.scenes.pay.taps.pay)));
+
+    const taps = [
+      { at: 1.0, box: P.scenes.form.taps.preset, scroll: 0 },
+      { at: 4.8, box: P.scenes.form.taps.cta, scroll: formEnd },
+      { at: 9.2, box: P.scenes.pay.taps.pay, scroll: payEnd },
+    ];
+
+    const form = $('s-form'), pay = $('s-pay'), thanks = $('s-thanks'), tap = $('tap');
+    const steps = [...document.querySelectorAll('#steps li')];
+    const move = (el, x, y) => { el.firstElementChild.style.transform = `translateY(${-y}px)`; el.style.transform = `translateX(${x}px)`; };
+
+    function frame(t) {
+      const back = t >= 16.2;
+      const payIn = back ? 0 : seg(t, 5.4, 6.0);
+      const thanksIn = back ? 1 : seg(t, 9.9, 10.5);
+      const fadeOut = seg(t, 16.3, 17.1);
+
+      move(form, -payIn * W * 0.28, back ? 0 : seg(t, 1.6, 4.3) * formEnd);
+      move(pay, (1 - payIn) * W - thanksIn * W * 0.28, seg(t, 7.0, 8.5) * payEnd);
+      move(thanks, (1 - thanksIn) * W, 0);
+      pay.style.visibility = payIn > 0 ? 'visible' : 'hidden';
+      thanks.style.visibility = thanksIn > 0 && fadeOut < 1 ? 'visible' : 'hidden';
+      thanks.style.opacity = 1 - fadeOut;
+
+      tap.style.opacity = 0;
+      for (const { at, box, scroll } of taps) {
+        const p = (t - at) / 0.7;
+        if (p < 0 || p > 1) continue;
+        tap.style.left = `${box.x + box.w / 2}px`;
+        tap.style.top = `${47 + box.y + box.h / 2 - scroll}px`;
+        tap.style.transform = `scale(${0.55 + 0.6 * p})`;
+        tap.style.opacity = p < 0.25 ? 1 : 1 - (p - 0.25) / 0.75;
+      }
+
+      const step = t < 1.0 || t >= 16.3 ? 0 : t < 5.4 ? 1 : t < 9.9 ? 2 : 3;
+      steps.forEach((li, i) => {
+        li.classList.toggle('on', i === step);
+        li.classList.toggle('done', step === 3);
+      });
+    }
+
+    const params = new URLSearchParams(location.search);
+    const still = params.has('t') ? Number(params.get('t')) : null;
+    if (still !== null || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      frame(still ?? 0.4);
+    } else {
+      const start = performance.now();
+      const tick = (now) => {
+        frame(((now - start) / 1000) % LOOP);
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+  </script>
+</body>
+</html>
