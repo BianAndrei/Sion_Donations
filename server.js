@@ -14,7 +14,7 @@ const {
   STRIPE_PORTAL_LOGIN_URL = '',
   PORT = 4242,
 } = process.env;
-const PUBLIC_URL = (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
+const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 
 // Fără chei Stripe aplicația pornește în mod demo: tot fluxul e vizibil, dar nu se încasează nimic.
 const DEMO = !STRIPE_SECRET_KEY || !STRIPE_PUBLISHABLE_KEY;

@@ -1,0 +1,22 @@
+# Render Blueprint: Dashboard → New → Blueprint → alege acest repo.
+# Cheile Stripe se completează în Render (sync: false), nu în cod.
+services:
+  - type: web
+    name: sion-donatii
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PORTAL_LOGIN_URL
+        sync: false

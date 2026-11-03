@@ -58,3 +58,6 @@ Fără `--url`, QR-ul duce la adresa din rețeaua locală, ca să testezi cu tel
 ## Lansare
 
 Orice gazdă Node 22+ (Render, Railway, VPS). Setează variabilele din `.env.example` în panoul de *secrets* al platformei, nu în cod, cu `PUBLIC_URL` = domeniul public. Comanda de start: `npm start`.
+
+### Render (plan gratuit)
+`render.yaml` configurează serviciul: Render → New → Blueprint → alege repo-ul, apoi completează cheile Stripe. `PUBLIC_URL` se ia automat din adresa Render (`RENDER_EXTERNAL_URL`) dacă nu e setat. Planul gratuit adoarme după ~15 minute fără vizitatori, deci deschide site-ul cu un minut înainte de finalul serviciului.
