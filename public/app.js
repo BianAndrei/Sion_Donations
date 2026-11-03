@@ -209,8 +209,8 @@ async function mountCheckout(clientSecret) {
   });
 
   const express = checkout.createExpressCheckoutElement({
-    // Google Pay nu are text în română, așa că afișăm doar sigla.
-    buttonType: { applePay: 'donate', googlePay: 'plain' },
+    // Doar siglele Apple Pay și Google Pay, fără text („Donează cu…”).
+    buttonType: { applePay: 'plain', googlePay: 'plain' },
     buttonTheme: { applePay: 'white-outline', googlePay: 'white' },
     buttonHeight: 52,
     layout: { maxColumns: 2 },
