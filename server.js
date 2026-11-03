@@ -18,6 +18,14 @@ const PUBLIC_URL = (env('PUBLIC_URL') || env('RENDER_EXTERNAL_URL') || `http://l
 
 // Fără chei Stripe aplicația pornește în mod demo: tot fluxul e vizibil, dar nu se încasează nimic.
 const DEMO = !STRIPE_SECRET_KEY || !STRIPE_PUBLISHABLE_KEY;
+// Greșeală frecventă: se lipește tot rândul din .env (NUME=valoare) în loc de valoare.
+for (const [name, value, prefix] of [
+  ['STRIPE_SECRET_KEY', STRIPE_SECRET_KEY, /^(sk|rk)_(test|live)_/],
+  ['STRIPE_PUBLISHABLE_KEY', STRIPE_PUBLISHABLE_KEY, /^pk_(test|live)_/],
+  ['STRIPE_WEBHOOK_SECRET', STRIPE_WEBHOOK_SECRET, /^whsec_/],
+]) {
+  if (value && !prefix.test(value)) console.error(`⚠️  ${name} nu arată ca o cheie Stripe validă. Pune doar valoarea, fără „${name}=”.`);
+}
 const stripe = DEMO ? null : new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2026-09-30.endive' });
 
 // Etichetă fixă care grupează sesiunile acestui flux în Dashboard-ul Stripe.
@@ -35,7 +43,7 @@ app.use((req, res, next) => {
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https://*.stripe.com",
     "frame-src https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://*.link.com",
-    "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.link.com",
+    "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.link.com https://fonts.googleapis.com",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'self'",
