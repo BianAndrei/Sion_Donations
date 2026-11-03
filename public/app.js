@@ -213,6 +213,10 @@ async function mountCheckout(clientSecret) {
     buttonTheme: { applePay: 'white-outline', googlePay: 'white' },
     buttonHeight: 52,
     layout: { maxColumns: 2 },
+    // „always”: butoanele apar pe orice browser compatibil, chiar dacă donatorul nu are încă
+    // un card salvat (îl adaugă din fereastra Apple/Google). Link nu îl afișăm.
+    paymentMethods: { applePay: 'always', googlePay: 'always', link: 'never' },
+    paymentMethodOrder: ['apple_pay', 'google_pay'],
   });
   express.mount('#express-checkout');
   // Dacă dispozitivul nu are niciun portofel, ascundem secțiunea „Plătește rapid”.
