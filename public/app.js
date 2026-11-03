@@ -215,12 +215,14 @@ async function mountCheckout(clientSecret) {
     layout: { maxColumns: 2 },
   });
   express.mount('#express-checkout');
-  express.on('availablepaymentmethodschange', ({ paymentMethods }) => {
-    // Dacă dispozitivul nu are niciun portofel, ascundem secțiunea „Plătește rapid”.
-    const none = !paymentMethods;
+  // Dacă dispozitivul nu are niciun portofel, ascundem secțiunea „Plătește rapid”.
+  const toggleWallets = (methods) => {
+    const none = !methods || !Object.values(methods).some(Boolean);
     $('express-checkout').closest('.field').hidden = none;
     document.querySelector('#pay-form .divider').hidden = none;
-  });
+  };
+  express.on('ready', ({ availablePaymentMethods }) => toggleWallets(availablePaymentMethods));
+  express.on('availablepaymentmethodschange', ({ paymentMethods }) => toggleWallets(paymentMethods));
 
   // Apple Pay și Google Pay apar deja sus, nu le mai dublăm în formularul de card.
   let payment;
