@@ -53,6 +53,15 @@ Generează:
 - `poster/sion-donatii-afis.png`: imagine 3840×2160 pentru proiector sau slide-uri.
 - `poster/sion-donatii-afis.pdf`: pentru print.
 
+Video în buclă (MP4, 18 secunde, se reia perfect), pentru proiector, ProPresenter, PowerPoint sau un TV cu stick USB:
+
+```bash
+npm run video          # poster/sion-donatii-afis.mp4 (1920×1080)
+npm run video -- --4k  # poster/sion-donatii-afis-4k.mp4
+```
+
+Cere ffmpeg (`brew install ffmpeg`). Rulează întâi `npm run poster`, ca videoul să aibă QR-ul la zi.
+
 Fără `--url`, QR-ul duce la adresa din rețeaua locală, ca să testezi cu telefonul în același Wi-Fi.
 
 ## Lansare

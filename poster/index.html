@@ -336,6 +336,10 @@
       });
     }
 
+    // Folosit de scripts/build-video.mjs ca să randeze fiecare cadru exact.
+    window.posterFrame = frame;
+    window.POSTER_LOOP = LOOP;
+
     const params = new URLSearchParams(location.search);
     const still = params.has('t') ? Number(params.get('t')) : null;
     if (still !== null || matchMedia('(prefers-reduced-motion: reduce)').matches) {
