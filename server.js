@@ -7,14 +7,14 @@ import { CURRENCIES, DEFAULT_PURPOSE, PURPOSE_MAX_LENGTH, grossUp } from './dona
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 
-const {
-  STRIPE_SECRET_KEY,
-  STRIPE_PUBLISHABLE_KEY,
-  STRIPE_WEBHOOK_SECRET,
-  STRIPE_PORTAL_LOGIN_URL = '',
-  PORT = 4242,
-} = process.env;
-const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
+// Valorile lipite în panoul de hosting vin uneori cu spații sau un rând nou la final.
+const env = (name) => process.env[name]?.trim() || undefined;
+const STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY');
+const STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY');
+const STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET');
+const STRIPE_PORTAL_LOGIN_URL = env('STRIPE_PORTAL_LOGIN_URL') ?? '';
+const PORT = env('PORT') ?? 4242;
+const PUBLIC_URL = (env('PUBLIC_URL') || env('RENDER_EXTERNAL_URL') || `http://localhost:${PORT}`).replace(/\/$/, '');
 
 // Fără chei Stripe aplicația pornește în mod demo: tot fluxul e vizibil, dar nu se încasează nimic.
 const DEMO = !STRIPE_SECRET_KEY || !STRIPE_PUBLISHABLE_KEY;

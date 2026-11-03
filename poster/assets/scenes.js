@@ -1,7 +1,7 @@
 // Generat de scripts/build-poster.mjs
 window.POSTER = {
-  "url": "http://192.168.0.177:4242",
-  "display": "192.168.0.177:4242",
+  "url": "https://sion-donatii.onrender.com",
+  "display": "sion-donatii.onrender.com",
   "scenes": {
     "form": {
       "height": 1136,
