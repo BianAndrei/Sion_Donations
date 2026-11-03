@@ -217,7 +217,8 @@ async function mountCheckout(clientSecret) {
   express.mount('#express-checkout');
   // Dacă dispozitivul nu are niciun portofel, ascundem secțiunea „Plătește rapid”.
   const toggleWallets = (methods) => {
-    const none = !methods || !Object.values(methods).some(Boolean);
+    // `ready` trimite { applePay: true }, `availablepaymentmethodschange` trimite { applePay: { available: true } }.
+    const none = !methods || !Object.values(methods).some((m) => m === true || m?.available === true);
     $('express-checkout').closest('.field').hidden = none;
     document.querySelector('#pay-form .divider').hidden = none;
   };
